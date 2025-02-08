@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	l := limiter.New(...)
+	l := limiter.New()
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
@@ -37,10 +37,10 @@ import (
 )
 
 func main() {
-	l := limiter.New(...) // Initialize your limiter
+	l := limiter.New()
 
 	router := gin.Default()
-	router.Use(limiter.GinLimit(l)) // Apply middleware
+	router.Use(limiter.GinLimit(l))
 
 	router.GET("/test", func(c *gin.Context) {
 		c.String(http.StatusOK, "OK")

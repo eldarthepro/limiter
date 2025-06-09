@@ -67,6 +67,7 @@ func GinLimit(l Limiter) gin.HandlerFunc {
 
 		if l.whiteListed(ip) {
 			c.Next()
+			return
 		}
 
 		if !l.visitor(ip).Allow() {

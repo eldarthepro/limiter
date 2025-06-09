@@ -72,6 +72,7 @@ func GinLimit(l Limiter) gin.HandlerFunc {
 		if !l.visitor(ip).Allow() {
 			//	logger.Error(fmt.Sprintf(notAllowedFmt, ip, c.GetString(domain.XFwdForHeader), ip, c.ClientIP()))
 			c.String(http.StatusTooManyRequests, tooManyReqMsg)
+			c.Abort()
 			return
 		}
 

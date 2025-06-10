@@ -3,7 +3,6 @@ package limiter
 import (
 	"net"
 	"net/http"
-	"slices"
 	"strings"
 	"time"
 
@@ -138,7 +137,7 @@ func defautlOptions() *limiterOptions {
 		cleanupFreq:   defaultCleanupFrequency,
 		ipHeader:      XOFF,
 		allowedPrefix: []string{},
-		allowedIPs:    []string{},
+		allowedIPs:    make(map[string]struct{}),
 	}
 }
 
@@ -221,7 +220,9 @@ func RecordTTL(ttl time.Duration) option {
 // Allowed prefixes takes strings with ips (requester ip will be checked for equality) that will not be ratelimited.
 func AllowedIPs(ip ...string) option {
 	return func(opts *limiterOptions) {
-		opts.allowedIPs = append(opts.allowedIPs, ip...)
+		for _, whitelisted := range ip {
+			opts.allowedIPs[whitelisted] = struct{}{}
+		}
 	}
 }
 
@@ -280,7 +281,8 @@ func (lim *limiter) cleanup() {
 }
 
 func (lim *limiter) whiteListed(ip string) bool {
-	return slices.Contains(lim.opts.allowedIPs, ip) || lim.hasWhitelistedPrefix(ip)
+	_, ok := lim.opts.allowedIPs[ip]
+	return ok || lim.hasWhitelistedPrefix(ip)
 }
 
 func (lim *limiter) hasWhitelistedPrefix(ip string) bool {

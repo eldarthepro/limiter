@@ -53,7 +53,7 @@ type (
 		cleanupFreq   time.Duration
 		ipHeader      string
 		allowedPrefix []string
-		allowedIPs    []string
+		allowedIPs    map[string]struct{}
 	}
 
 	option func(*limiterOptions)
